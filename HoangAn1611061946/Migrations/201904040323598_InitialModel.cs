@@ -3,10 +3,33 @@ namespace HoangAn1611061946.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class KhoiTaoModel : DbMigration
+    public partial class InitialModel : DbMigration
     {
         public override void Up()
         {
+            CreateTable(
+                "dbo.Categories",
+                c => new
+                    {
+                        Id = c.Byte(nullable: false),
+                        Name = c.String(nullable: false, maxLength: 255),
+                    })
+                .PrimaryKey(t => t.Id);
+            
+            CreateTable(
+                "dbo.Courses",
+                c => new
+                    {
+                        id = c.Int(nullable: false, identity: true),
+                        LecturerId = c.String(nullable: false),
+                        Place = c.String(nullable: false, maxLength: 255),
+                        DateTime = c.DateTime(nullable: false),
+                        CategoryId = c.Byte(nullable: false),
+                    })
+                .PrimaryKey(t => t.id)
+                .ForeignKey("dbo.Categories", t => t.CategoryId, cascadeDelete: true)
+                .Index(t => t.CategoryId);
+            
             CreateTable(
                 "dbo.AspNetRoles",
                 c => new
@@ -83,17 +106,21 @@ namespace HoangAn1611061946.Migrations
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
+            DropForeignKey("dbo.Courses", "CategoryId", "dbo.Categories");
             DropIndex("dbo.AspNetUserLogins", new[] { "UserId" });
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
             DropIndex("dbo.AspNetUsers", "UserNameIndex");
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
+            DropIndex("dbo.Courses", new[] { "CategoryId" });
             DropTable("dbo.AspNetUserLogins");
             DropTable("dbo.AspNetUserClaims");
             DropTable("dbo.AspNetUsers");
             DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.AspNetRoles");
+            DropTable("dbo.Courses");
+            DropTable("dbo.Categories");
         }
     }
 }
